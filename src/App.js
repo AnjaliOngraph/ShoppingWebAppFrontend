@@ -7,7 +7,7 @@ import Signup from "./components/accountPage/signupPage";
 import Signin from "./components/accountPage/SigninPage";
 import SubcategoryProducts from "./components/productpages/SubcategoryProducts";
 import Cart from "./components/Cartprocess/Cart";
-
+import Address from "./components/Cartprocess/Address";
 
 function App() {
 
@@ -25,6 +25,8 @@ function App() {
         <Route path="/product-details/:id" element={<Productdetails />} />
 
         <Route path="/product/cart" element={<Cart />}></Route>
+        <Route path="/cart/address" element={<Address />}></Route>
+        
       </Routes>
     
     </BrowserRouter>
