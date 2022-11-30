@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../Mainpage/Navbar";
+import Navbar from "../mainPages/Navbar";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
 
@@ -18,16 +18,13 @@ export default function Cart() {
 
   useEffect(() => {
     if (cartItems) {
-      // console.log(cartItems, "items");
       cartItems.map((cartItem) => {
         if (cartItem.productId) {
           axios
             .get(`/product-details/${cartItem.productId}`)
             .then((a) => {
-              // console.log(cartItem.count, "1");
-              // console.log(a.data, "2");
               item = { count: cartItem.count, data: a.data };
-              // console.log(item, "item in useffect");
+
               setProducts((current) => [...current, item]);
             })
             .catch((b) => {
@@ -39,8 +36,6 @@ export default function Cart() {
       console.log({ error: "no items in the cart" });
     }
   }, []);
-
-  console.log(products, "p");
 
   const addItemHandler = (product) => {
     console.log(product, "89");
@@ -88,13 +83,30 @@ export default function Cart() {
     }
   };
 
-  console.log(cart, "cart");
-
   const emptyBasketHandler = () => {
     try {
       localStorage.removeItem("cart");
     } catch (error) {
       console.log({ error: "error in emptying basket" });
+    }
+  };
+
+  const checkOutHandler = () => {
+    console.log(products, "checking fpr products");
+
+    try {
+      const UserId = localStorage.getItem("userId");
+
+      console.log(UserId, "id");
+      if (UserId) {
+        navigate("/cart/address", {
+          state: { length: cartItems.length },
+        });
+      } else {
+        console.log("you need to login");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -109,12 +121,12 @@ export default function Cart() {
         <div className="col-span-2 font-bold pb-4 text-2xl">Shopping Cart</div>
         <div className="pt-3">
           <table className="table-auto w-full rounded-md bg-gray-100 ">
-            <thead>
+            <thead className="text-left">
               <tr className="border-b-2 border-gray-400">
-                <th className="p-3">ITEM DESCRIPTION</th>
-                <th>UNIT PRICE</th>
-                <th>QUANTITY</th>
-                <th>SUBTOTAL</th>
+                <th className="p-3 pl-10 w-96">ITEM DESCRIPTION</th>
+                <th className="text-center">UNIT PRICE</th>
+                <th className="text-center">QUANTITY</th>
+                <th className="text-center">SUBTOTAL</th>
                 <th></th>
               </tr>
             </thead>
@@ -127,9 +139,9 @@ export default function Cart() {
             ) : (
               products.map((product) => {
                 return (
-                  <tbody key={product.data._id}>
+                  <tbody key={product.data._id} className="text-left">
                     <tr className="border-b-2 border-gray-200">
-                      <td className="p-2 ">
+                      <td className="p-2 pl-10">
                         <span>
                           <img
                             alt={"product"}
@@ -139,8 +151,8 @@ export default function Cart() {
                           <span className="pl-4">{product.data.name}</span>
                         </span>
                       </td>
-                      <td>&#8377;{product.data.price}</td>
-                      <td>
+                      <td className="text-center" >&#8377;{product.data.price}</td>
+                      <td className="text-center">
                         <div>
                           <button
                             className="bg-lime-600 hover:bg-lime-700 rounded-md text-white font-bold py-1 px-3"
@@ -158,13 +170,13 @@ export default function Cart() {
                           </button>
                         </div>
                       </td>
-                      <td>&#8377;{product.data.price * product.count}</td>
+                      <td className="text-center">&#8377;{product.data.price * product.count}</td>
                       <td>
                         <button
                           onClick={() => {
                             removeRowHandler(product);
                           }}
-                          className="font-bold text-black hover:text-red-500"
+                          className="font-bold text-black hover:text-red-500 mx-1"
                         >
                           X
                         </button>
@@ -196,14 +208,20 @@ export default function Cart() {
                       total + product.data.price * product.count,
                     0
                   )}
+                  {localStorage.setItem(
+                    "totalAmount",
+                    JSON.stringify(
+                      products.reduce(
+                        (total, product) =>
+                          total + product.data.price * product.count,
+                        0
+                      )
+                    )
+                  )}
                 </span>
                 <button
                   className=" items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-600 px-6 py-2 mt-6 font-bold text-xl  text-white shadow-sm hover:bg-lime-700 hover:shadow-md hover:shadow-lime-500"
-                  onClick={() =>
-                    navigate("/cart/address", {
-                      state: { length: cartItems.length },
-                    })
-                  }
+                  onClick={() => checkOutHandler()}
                 >
                   Checkout
                 </button>

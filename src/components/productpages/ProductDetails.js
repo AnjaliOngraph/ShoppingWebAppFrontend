@@ -1,4 +1,4 @@
-import Navbar from "../Mainpage/Navbar";
+import Navbar from "../mainPages/Navbar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";

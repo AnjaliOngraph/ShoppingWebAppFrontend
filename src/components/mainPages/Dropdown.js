@@ -18,10 +18,10 @@ export default function Dropdown() {
               className="bg-white border rounded-lg absolute top-1 right-0 transition duration-150 ease-in-out origin-top-left min-w-32"
             >
               <li className="px-3 py-1 hover:bg-gray-100">
-                <a href="/subcategory-products/6374ce7273b28ca1de590fd2">Oil</a>
+                <a href="/subcategory-products/637f45b16d3cbb4fa25b72d7">Oil</a>
               </li>
               <li className="px-3 py-1 hover:bg-gray-100">
-                <a href="/subcategory-products/6374ce3473b28ca1de590fd0">
+                <a href="/subcategory-products/637f45be6d3cbb4fa25b72d9">
                   Ghee
                 </a>
               </li>
@@ -40,7 +40,7 @@ export default function Dropdown() {
                 </a>
               </li>
               <li className="px-3 py-1 hover:bg-gray-100">
-                <a href="/subcategory-products/6374ce1e73b28ca1de590fce">Tea</a>
+                <a href="/subcategory-products/637f45f06d3cbb4fa25b72dd">Tea</a>
               </li>
             </ul>
           </li>

@@ -1,4 +1,3 @@
-// import { Fragment } from 'react'
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Dropdown from "./Dropdown";
@@ -11,7 +10,6 @@ export default function Navbar(props) {
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-         
                 <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-lime-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -29,13 +27,17 @@ export default function Navbar(props) {
                 </div>
               </div>
               <a
-                href="/product/cart"
+                href="/my-orders"
                 className="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-lime-700"
               >
+                My Orders
+              </a>
+              <a
+                href="/product/cart"
+                className="ml-3 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-lime-700"
+              >
                 Cart
-                <p className="color-black px-2">
-                 { props.length}
-                </p>
+                <p className="color-black px-2">{props.length}</p>
               </a>
             </div>
           </div>
