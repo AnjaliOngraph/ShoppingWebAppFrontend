@@ -1,5 +1,9 @@
 import { Formik } from "formik";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+// import Address from "./address";
+// import {useForm} from "react-hook-form"
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   name: "",
@@ -11,7 +15,6 @@ const initialValues = {
 };
 
 const validate = (values) => {
-
   let errors = {};
   const regex_email = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
   const regexPhoneNumber = /^[1-9]\d{2}\d{3}\d{4}/;
@@ -50,10 +53,18 @@ const validate = (values) => {
   return errors;
 };
 
-export default function AddNewDeliveryAddress() {
-  const addNewDeliveryAddress = async (values) => {
-    const { name, mobileNo, email, pinCode, address, city } = values;
+export default function DeliveryAddressForm() {
+  const navigate = useNavigate();
 
+  const [addresses, setAddresses] = useState(
+    !localStorage.getItem("userAddresses")
+      ? []
+      : JSON.parse(localStorage.getItem("userAddresses"))
+  );
+
+  const DeliveryAddress = async (values, { resetForm }) => {
+    let add = [];
+    const { name, mobileNo, email, pinCode, address, city } = values;
     try {
       const res = await fetch("/newAddress", {
         method: "POST",
@@ -70,10 +81,13 @@ export default function AddNewDeliveryAddress() {
           UserId: localStorage.getItem("userId"),
         }),
       });
-
       const details = await res.json();
+      console.log(details, "details");
+      add.push(details);
 
-      console.log(details, "address added successfully");
+      setAddresses([...addresses, add]);
+
+      resetForm({ values: "" });
 
       if (res.status === 400) {
         console.log("Please fill all details. ");
@@ -81,22 +95,40 @@ export default function AddNewDeliveryAddress() {
     } catch (error) {
       console.log(error);
     }
+    window.location.reload();
   };
+
+  console.log(addresses, "its address here");
+  localStorage.setItem("userAddresses", JSON.stringify(addresses));
+
+ 
+  
   return (
     <Formik
       initialValues={initialValues}
       validate={validate}
-      onSubmit={addNewDeliveryAddress}
+      onSubmit={DeliveryAddress}
     >
       {(formik) => {
-        const { values, handleChange, handleSubmit, errors, handleBlur,touched } = formik;
+        const {
+          values,
+          handleChange,
+          handleSubmit,
+          errors,
+          handleBlur,
+          touched,
+          resetForm
+        } = formik;
         return (
           <div>
             <form onSubmit={handleSubmit}>
-              <div className="overflow-hidden shadow sm:rounded-md">
-                <div className="m-6 font-bold text-xl">
-                  Add Delivery Address
+              <div className="overflow-hidden pt-4 px-4 pb-20 sm:block sm:p-0 shadow sm:rounded-md">
+                <div className="inline-flex">
+                  <div className="m-6 font-bold text-xl">
+                    Add Delivery Address
+                  </div>
                 </div>
+
                 <div className="bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
@@ -243,12 +275,19 @@ export default function AddNewDeliveryAddress() {
                     </div>
                   </div>
                 </div>
-                <div className=" py-3 ml-7  sm:px-6">
+                <div className=" py-3 sm:px-6">
                   <button
                     className=" items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
                     type="submit"
                   >
-                    Add new Address
+                    Submit
+                  </button>
+                  <button
+                    type="reset"
+                    className=" ml-2 items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
+                    onClick={resetForm}
+                  >
+                    Clear All
                   </button>
                 </div>
               </div>

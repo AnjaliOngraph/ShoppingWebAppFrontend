@@ -2,8 +2,10 @@ import Navbar from "../mainPages/Navbar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SubcategoryProducts() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [products, setProducts] = useState([]);
 
@@ -57,7 +59,29 @@ export default function SubcategoryProducts() {
     <div className="bg-white">
       <Navbar length={cart?.length} />
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8 ">
-        <a className="m-4 hover:text-gray-900 font-semibold text-gray-700" href="/">Back to Home</a>
+        <a
+          className="m-4 hover:text-gray-900 font-semibold cursor-pointer text-gray-700 inline"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/");
+          }}
+        >
+          <svg
+            className="inline w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+          Back to Home
+        </a>
         <div className="grid grid-cols-1 gap-y-10 gap-x-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xl:gap-x-5   ">
           {products.map((product) => (
             <div
@@ -66,13 +90,16 @@ export default function SubcategoryProducts() {
             >
               <a
                 key={product._id}
-                href={`/product-details/${product._id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/product/${product._id}`);
+                }}
                 className="group"
               >
                 <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8 ">
                   <img
                     src={product.imageSrc}
-                    alt="product image"
+                    alt="product"
                     className="h-full w-full object-cover object-center group-hover:opacity-75"
                   />
                 </div>

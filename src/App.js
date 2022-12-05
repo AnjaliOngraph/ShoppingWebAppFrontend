@@ -9,6 +9,7 @@ import SubcategoryProducts from "./components/productPages/SubcategoryProducts";
 import Cart from "./components/cartProcess/cart";
 import Address from "./components/cartProcess/address";
 import Orders from "./components/order/Order";
+import PaymentPage from "./components/cartProcess/paymentPage";
 
 function App() {
 
@@ -20,14 +21,15 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route
-          path="/subcategory-products/:id"
+          path="/subcategory/products/:id"
           element={<SubcategoryProducts />}
         />
-        <Route path="/product-details/:id" element={<Productdetails />} />
+        <Route path="/product/:id" element={<Productdetails />} />
 
         <Route path="/product/cart" element={<Cart />}></Route>
         <Route path="/cart/address" element={<Address />}></Route>
-        <Route path="/my-orders" element={<Orders />}></Route>
+        <Route path="/active-orders" element={<Orders />}></Route>
+        <Route path="/cart/address/checkout" element={<PaymentPage/>}></Route>
       </Routes>
     
     </BrowserRouter>

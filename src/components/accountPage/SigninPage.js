@@ -161,10 +161,19 @@ const navigate = useNavigate();
                     <div className="flex items-center justify-between">
                       <div className="text-sm">
                         <a
-                          href="#"
                           className="font-medium text-lime-600 hover:text-lime-500"
                         >
                           Forgot your password?
+                        </a>
+                      </div>
+
+                      <div className="text-sm">
+                        <a
+                         onClick={(e)=>{e.preventDefault();
+                        navigate("/signup")}}
+                          className="font-medium text-lime-600 hover:text-lime-500 cursor-pointer"
+                        >
+                         Don't have an account? Signup 
                         </a>
                       </div>
                     </div>

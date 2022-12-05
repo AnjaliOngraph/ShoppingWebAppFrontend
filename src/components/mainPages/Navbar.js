@@ -1,8 +1,11 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Dropdown from "./Dropdown";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar(props) {
+  const navigate = useNavigate();
+
   return (
     <Disclosure as="nav" className="bg-lime-600">
       {({ open }) => (
@@ -26,19 +29,25 @@ export default function Navbar(props) {
                   </div>
                 </div>
               </div>
-              <a
-                href="/my-orders"
+              <button
                 className="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-lime-700"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/active-orders");
+                }}
               >
                 My Orders
-              </a>
-              <a
-                href="/product/cart"
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/product/cart");
+                }}
                 className="ml-3 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-lime-700"
               >
                 Cart
                 <p className="color-black px-2">{props.length}</p>
-              </a>
+              </button>
             </div>
           </div>
         </>

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../mainPages/Navbar";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
+// import CartDisplay from "./cartDisplay";
 
 export default function Cart() {
   const cartItems = JSON.parse(localStorage.getItem("cart"));
   const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
 
   const [cart, setCart] = useState(
@@ -18,14 +20,21 @@ export default function Cart() {
 
   useEffect(() => {
     if (cartItems) {
-      cartItems.map((cartItem) => {
+      let pro = [];
+      cartItems.map((cartItem, index) => {
         if (cartItem.productId) {
           axios
             .get(`/product-details/${cartItem.productId}`)
             .then((a) => {
               item = { count: cartItem.count, data: a.data };
 
-              setProducts((current) => [...current, item]);
+              pro.push(item);
+
+              if (cartItems.length - 1 == index) {
+                setProducts(pro);
+              }
+
+              // setProducts([...products, item]);
             })
             .catch((b) => {
               console.log(Error);
@@ -72,12 +81,21 @@ export default function Cart() {
     }
   };
 
-  const removeRowHandler = (product) => {
+  const removeRowHandler = (productId) => {
     try {
+      console.log(productId, "1");
       const filtered = cartItems.filter((cartItem) => {
-        return cartItem.productId !== product.data._id;
+        return cartItem.productId !== productId;
       });
-      setCart(filtered);
+
+      const filteredproducts = products.filter((product) => {
+        return product.data._id !== productId;
+      });
+
+      setProducts(filteredproducts);
+
+      // setCart(filtered);
+      localStorage.setItem("cart", JSON.stringify(filtered));
     } catch (error) {
       console.log({ error: "error in removing item" });
     }
@@ -86,6 +104,7 @@ export default function Cart() {
   const emptyBasketHandler = () => {
     try {
       localStorage.removeItem("cart");
+      setProducts([]);
     } catch (error) {
       console.log({ error: "error in emptying basket" });
     }
@@ -103,6 +122,7 @@ export default function Cart() {
           state: { length: cartItems.length },
         });
       } else {
+        navigate("/signin");
         console.log("you need to login");
       }
     } catch (error) {
@@ -110,9 +130,9 @@ export default function Cart() {
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  // useEffect(() => {
+  //   localStorage.setItem("cart", JSON.stringify(cart));
+  // }, [cart]);
 
   return (
     <div>
@@ -151,7 +171,9 @@ export default function Cart() {
                           <span className="pl-4">{product.data.name}</span>
                         </span>
                       </td>
-                      <td className="text-center" >&#8377;{product.data.price}</td>
+                      <td className="text-center">
+                        &#8377;{product.data.price}
+                      </td>
                       <td className="text-center">
                         <div>
                           <button
@@ -170,11 +192,13 @@ export default function Cart() {
                           </button>
                         </div>
                       </td>
-                      <td className="text-center">&#8377;{product.data.price * product.count}</td>
+                      <td className="text-center">
+                        &#8377;{product.data.price * product.count}
+                      </td>
                       <td>
                         <button
                           onClick={() => {
-                            removeRowHandler(product);
+                            removeRowHandler(product.data._id);
                           }}
                           className="font-bold text-black hover:text-red-500 mx-1"
                         >

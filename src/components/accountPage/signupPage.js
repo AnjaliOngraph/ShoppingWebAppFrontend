@@ -78,7 +78,7 @@ export default function Signup() {
       } else if (res.status === 401) {
         console.log("Account for this email already exists");
       } else {
-        localStorage.setItem("userId", data.user._id);
+        localStorage.setItem("userId", data._id);
         console.log("registration successfull");
         navigate("/product/cart");
       }
@@ -229,8 +229,11 @@ export default function Signup() {
                     </div>
                     <div className="text-sm">
                       <a
-                        href="/signin"
-                        className="font-medium text-lime-600 hover:text-lime-500"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate("/signin");
+                        }}
+                        className="font-medium cursor-pointer text-lime-600 hover:text-lime-500"
                       >
                         Already have an account?
                       </a>
