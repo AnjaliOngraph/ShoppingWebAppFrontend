@@ -15,27 +15,23 @@ export default function Dropdown() {
               <span className="pr-1 flex-1">Edible oils and ghee </span>
             </button>
             <ul className="bg-white border rounded-lg absolute top-1 right-0 transition duration-150 ease-in-out origin-top-left min-w-32">
-              <li className="px-3 py-1 hover:bg-gray-100">
-                <a
-                  className="cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/subcategory/products/637f45b16d3cbb4fa25b72d7");
-                  }}
-                >
-                  Oil
-                </a>
+              <li
+                className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/subcategory/products/637f45b16d3cbb4fa25b72d7");
+                }}
+              >
+                Oil
               </li>
-              <li className="px-3 py-1 hover:bg-gray-100">
-                <a
-                  className="cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/subcategory/products/637f45be6d3cbb4fa25b72d9");
-                  }}
-                >
-                  Ghee
-                </a>
+              <li
+                className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/subcategory/products/637f45be6d3cbb4fa25b72d9");
+                }}
+              >
+                Ghee
               </li>
             </ul>
           </li>
@@ -44,27 +40,23 @@ export default function Dropdown() {
               <span className="pr-1 flex-1">Coffee and Tea</span>
             </button>
             <ul className="bg-white border rounded-lg absolute bottom-1 right-0 transition duration-150 ease-in-out origin-top-left min-w-32">
-              <li className="px-3 py-1 hover:bg-gray-100">
-                <a
-                  className="cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/subcategory/products/637f45e86d3cbb4fa25b72db");
-                  }}
-                >
-                  Coffee
-                </a>
+              <li
+                className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/subcategory/products/637f45e86d3cbb4fa25b72db");
+                }}
+              >
+                Coffee
               </li>
-              <li className="px-3 py-1 hover:bg-gray-100">
-                <a
-                className="cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/subcategory/products/637f45f06d3cbb4fa25b72dd");
-                  }}
-                >
-                  Tea
-                </a>
+              <li
+                className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/subcategory/products/637f45f06d3cbb4fa25b72dd");
+                }}
+              >
+                Tea
               </li>
             </ul>
           </li>

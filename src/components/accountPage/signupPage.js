@@ -1,5 +1,6 @@
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../mainPages/Navbar";
 
 const initialValues = {
   first_name: "",
@@ -71,14 +72,14 @@ export default function Signup() {
 
       const data = await res.json();
 
-      console.log(data);
+      console.log(data, "data");
 
       if (res.status === 400) {
         console.log("Please fill all details. ");
       } else if (res.status === 401) {
         console.log("Account for this email already exists");
       } else {
-        localStorage.setItem("userId", data._id);
+        localStorage.setItem("userId", data.token);
         console.log("registration successfull");
         navigate("/product/cart");
       }
@@ -87,8 +88,10 @@ export default function Signup() {
     }
   };
 
+  const cartItems = JSON.parse(localStorage.getItem("cart"));
   return (
     <>
+      <Navbar length={cartItems?.length} />
       <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8  ">
         <div className="w-full max-w-md space-y-8 ">
           <div>
@@ -132,13 +135,17 @@ export default function Signup() {
                         value={values.first_name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600  sm:text-sm my-4  shadow-sm "
+                        className={
+                          errors.first_name && touched.first_name
+                            ? "relative block w-full appearance-none rounded-none rounded-t-md border border-red-500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-red-600 focus:outline-none focus:ring-red-600  sm:text-sm mt-4  shadow-sm"
+                            : "relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600  sm:text-sm mt-4  shadow-sm"
+                        }
                         placeholder="Enter your first name"
                       />
                       {errors.first_name && touched.first_name && (
-                        <span className="text-red-600 text-xs mt-2">
+                        <div className="text-red-600 text-xs m-1 ml-3">
                           {errors.first_name}
-                        </span>
+                        </div>
                       )}
                     </div>
                     <div>
@@ -154,11 +161,13 @@ export default function Signup() {
                         value={values.last_name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm my-4"
+                        className=
+                        {errors.last_name && touched.last_name ? "relative block w-full appearance-none rounded-none rounded-t-md border border-red-500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-red-600 focus:outline-none focus:ring-red-600 sm:text-sm mt-4":"relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm mt-4" }
+                        
                         placeholder="Enter your last name"
                       />
                       {errors.last_name && touched.last_name && (
-                        <span className="text-red-600 text-xs mt-2">
+                        <span className="text-red-600 text-xs  m-1 ml-3">
                           {errors.last_name}
                         </span>
                       )}
@@ -176,11 +185,14 @@ export default function Signup() {
                         value={values.email}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm my-4"
+                        className=
+                        {errors.email && touched.email ? "relative block w-full appearance-none rounded-none rounded-t-md border border-red-500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-red-600 focus:outline-none focus:ring-red-600 sm:text-sm mt-4": "relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm mt-4"}
+                        
+                        
                         placeholder="Email address"
                       />
                       {errors.email && touched.email && (
-                        <span className="text-red-600 text-xs mt-2">
+                        <span className="text-red-600 text-xs  m-1 ml-3">
                           {errors.email}
                         </span>
                       )}
@@ -197,11 +209,13 @@ export default function Signup() {
                         value={values.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm my-4"
+                        className=
+                        {errors.password && touched.password?  "relative block w-full appearance-none rounded-none rounded-b-md border border-red-500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-red-600 focus:outline-none focus:ring-red-600 sm:text-sm mt-4":  "relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm mt-4" }
+                       
                         placeholder="Password"
                       />
                       {errors.password && touched.password && (
-                        <span className="text-red-600 text-xs mt-2">
+                        <span className="text-red-600 text-xs  m-1 ml-3">
                           {errors.password}
                         </span>
                       )}
@@ -218,17 +232,19 @@ export default function Signup() {
                         value={values.cpassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm my-4"
+                        className=
+                        {errors.cpassword && touched.cpassword ?  "relative block w-full appearance-none rounded-none rounded-b-md border border-red-500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-red-600 focus:outline-none focus:ring-red-600 sm:text-sm my-4" :  "relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-lime-600 focus:outline-none focus:ring-lime-600 sm:text-sm my-4" }
+                       
                         placeholder="Confirm Password"
                       />
                       {errors.cpassword && touched.cpassword && (
-                        <span className="text-red-600 text-xs mt-2">
+                        <span className="text-red-600 text-xs m-1 ml-3">
                           {errors.cpassword}
                         </span>
                       )}
                     </div>
                     <div className="text-sm">
-                      <a
+                      <div
                         onClick={(e) => {
                           e.preventDefault();
                           navigate("/signin");
@@ -236,7 +252,7 @@ export default function Signup() {
                         className="font-medium cursor-pointer text-lime-600 hover:text-lime-500"
                       >
                         Already have an account?
-                      </a>
+                      </div>
                     </div>
                   </div>
 

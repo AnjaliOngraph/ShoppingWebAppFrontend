@@ -8,30 +8,33 @@ import Signin from "./components/accountPage/signinPage";
 import SubcategoryProducts from "./components/productPages/SubcategoryProducts";
 import Cart from "./components/cartProcess/cart";
 import Address from "./components/cartProcess/address";
-import Orders from "./components/order/Order";
+import Orders from "./components/order/order";
 import PaymentPage from "./components/cartProcess/paymentPage";
+import ForgotPassword from "./components/accountPage/forgotPassword";
+import ResetPassword from "./components/accountPage/resetPassword";
+import PageNotFound from "./components/mainPages/pageNotFound";
+import { OrderDetailPage } from "./components/order/orderDetailPage";
 
 function App() {
-
   return (
     <BrowserRouter>
-   
       <Routes>
         <Route path="/" element={<Header />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route
-          path="/subcategory/products/:id"
-          element={<SubcategoryProducts />}
-        />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
+        <Route path="/subcategory/products/:id" element={<SubcategoryProducts />}/>
         <Route path="/product/:id" element={<Productdetails />} />
 
         <Route path="/product/cart" element={<Cart />}></Route>
         <Route path="/cart/address" element={<Address />}></Route>
+
         <Route path="/active-orders" element={<Orders />}></Route>
-        <Route path="/cart/address/checkout" element={<PaymentPage/>}></Route>
+        <Route path="/cart/address/checkout" element={<PaymentPage />}></Route>
+        <Route path="/myOrder/orderDetails" element={<OrderDetailPage/>}></Route>
+        <Route path="*" element={<PageNotFound/>} />
       </Routes>
-    
     </BrowserRouter>
   );
 }

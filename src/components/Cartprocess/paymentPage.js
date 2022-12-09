@@ -7,7 +7,8 @@ export default function PaymentPage() {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const addresses = location.state.address;
+  const addresses = location.state.addresses;
+
   const deliveryAddressId = localStorage.getItem("addressId");
 
   const address = addresses.filter((e) => {
@@ -30,10 +31,11 @@ export default function PaymentPage() {
       const res = await fetch("/placeOrder", {
         method: "POST",
         headers: {
-          "content-Type": "application/json",
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("userId"),
         },
         body: JSON.stringify({
-          userId: localStorage.getItem("userId"),
           Products: itemdetail,
           count: count,
           productQuantity: totalCount,
@@ -52,9 +54,11 @@ export default function PaymentPage() {
     }
   };
 
+  const cartItems = JSON.parse(localStorage.getItem("cart"));
+
   return (
     <div>
-      <Navbar length={location.state.length} />
+      <Navbar length={cartItems?.length} />
       <div className="m-10 grid grid-cols-3 grid-rows-5 gap-3  font-semibold">
         <div className=" grid col-span-2 row-span-5 gap-3">
           <div className=" col-span-2 row-span-1 border-gray-200 border dotted">
@@ -94,7 +98,7 @@ export default function PaymentPage() {
                 </div>
               </span>
               <button
-                className=" text-center border solid border-slate-700 px-14  p-1 rounded-sm ml-44 "
+                className=" text-center border solid border-slate-700 px-14 p-1 rounded-sm ml-44 "
                 onClick={() => {
                   navigate("/cart/address");
                 }}
@@ -178,7 +182,7 @@ export default function PaymentPage() {
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke-width="1.5"
+                            strokeWidth="1.5"
                             stroke="currentColor"
                             className="w-12 h-12 text-white mx-40 "
                           >

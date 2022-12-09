@@ -1,9 +1,5 @@
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-// import Address from "./address";
-// import {useForm} from "react-hook-form"
-import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   name: "",
@@ -53,23 +49,16 @@ const validate = (values) => {
   return errors;
 };
 
-export default function DeliveryAddressForm() {
-  const navigate = useNavigate();
-
-  const [addresses, setAddresses] = useState(
-    !localStorage.getItem("userAddresses")
-      ? []
-      : JSON.parse(localStorage.getItem("userAddresses"))
-  );
-
+export default function DeliveryAddressForm(props) {
   const DeliveryAddress = async (values, { resetForm }) => {
-    let add = [];
     const { name, mobileNo, email, pinCode, address, city } = values;
     try {
       const res = await fetch("/newAddress", {
         method: "POST",
         headers: {
-          "content-Type": "application/json",
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("userId"),
         },
         body: JSON.stringify({
           name,
@@ -78,16 +67,15 @@ export default function DeliveryAddressForm() {
           pinCode,
           address,
           city,
-          UserId: localStorage.getItem("userId"),
         }),
       });
       const details = await res.json();
-      console.log(details, "details");
-      add.push(details);
 
-      setAddresses([...addresses, add]);
+      props.addresses.push(details);
+      props.setAddresses(props.addresses);
 
       resetForm({ values: "" });
+      props.setAddForm(false);
 
       if (res.status === 400) {
         console.log("Please fill all details. ");
@@ -95,14 +83,10 @@ export default function DeliveryAddressForm() {
     } catch (error) {
       console.log(error);
     }
-    window.location.reload();
   };
 
-  console.log(addresses, "its address here");
-  localStorage.setItem("userAddresses", JSON.stringify(addresses));
+  console.log(props.addresses, "its address here");
 
- 
-  
   return (
     <Formik
       initialValues={initialValues}
@@ -117,16 +101,25 @@ export default function DeliveryAddressForm() {
           errors,
           handleBlur,
           touched,
-          resetForm
+          resetForm,
         } = formik;
         return (
           <div>
             <form onSubmit={handleSubmit}>
-              <div className="overflow-hidden pt-4 px-4 pb-20 sm:block sm:p-0 shadow sm:rounded-md">
+              <div className="overflow-hidden pt-4 px-4 pb-20 sm:block sm:p-0 shadow  border-solid border-l-2 border-gray-300 ">
                 <div className="inline-flex">
                   <div className="m-6 font-bold text-xl">
                     Add Delivery Address
                   </div>
+                  <button
+                    className="right-16 m-4 absolute hover:font-semibold "
+                    onClick={() => {
+                      props.setAddForm(false);
+                    }}
+                    title="close"
+                  >
+                    X
+                  </button>
                 </div>
 
                 <div className="bg-white px-4 py-5 sm:p-6">
@@ -146,10 +139,14 @@ export default function DeliveryAddressForm() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         autoComplete="given-name"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        className={
+                          errors.name  && touched.name
+                            ? "mt-1 block w-full rounded-md  shadow-sm border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                            : "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        }
                       />
                       {errors.name && touched.name && (
-                        <span className="text-red-600 text-xs mt-2">
+                        <span className="text-red-600 text-xs mt-2 ">
                           {errors.name}
                         </span>
                       )}
@@ -169,7 +166,11 @@ export default function DeliveryAddressForm() {
                         value={values.mobileNo}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        className={
+                          errors.mobileNo  && touched.mobileNo
+                            ? "mt-1 block w-full rounded-md  shadow-sm border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                            : "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        }
                       />
                       {errors.mobileNo && touched.mobileNo && (
                         <span className="text-red-600 text-xs mt-2">
@@ -193,7 +194,11 @@ export default function DeliveryAddressForm() {
                         autoComplete="email"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        className={
+                          errors.email && touched.email
+                            ? "mt-1 block w-full rounded-md border-red-500 ring-red-500 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                            : "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        }
                       />
                       {errors.email && touched.email && (
                         <span className="text-red-600 text-xs mt-2">
@@ -217,7 +222,11 @@ export default function DeliveryAddressForm() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         autoComplete="street-address"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        className={
+                          errors.address && touched.address
+                            ? "mt-1 block w-full rounded-md border-red-500 ring-red-500 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                            : "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        }
                       />
                       {errors.address && touched.address && (
                         <span className="text-red-600 text-xs mt-2">
@@ -241,7 +250,11 @@ export default function DeliveryAddressForm() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         autoComplete="address-level1"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        className={
+                          errors.city && touched.city
+                            ? "mt-1 block w-full rounded-md border-red-500 ring-red-500 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                            : "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        }
                       />
                       {errors.city && touched.city && (
                         <span className="text-red-600 text-xs mt-2">
@@ -265,7 +278,11 @@ export default function DeliveryAddressForm() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         autoComplete="postal-code"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        className={
+                          errors.pinCode && touched.pinCode
+                            ? "mt-1 block w-full rounded-md border-red-500 ring-red-500 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                            : "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-lime-500 focus:ring-lime-500 sm:text-sm"
+                        }
                       />
                       {errors.pinCode && touched.pinCode && (
                         <span className="text-red-600 text-xs mt-2">
@@ -277,10 +294,11 @@ export default function DeliveryAddressForm() {
                 </div>
                 <div className=" py-3 sm:px-6">
                   <button
+                    type="reset"
                     className=" items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
-                    type="submit"
+                    onClick={() => props.setAddForm(false)}
                   >
-                    Submit
+                    Cancel
                   </button>
                   <button
                     type="reset"
@@ -288,6 +306,13 @@ export default function DeliveryAddressForm() {
                     onClick={resetForm}
                   >
                     Clear All
+                  </button>
+
+                  <button
+                    className=" ml-2 items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
+                    type="submit"
+                  >
+                    Submit
                   </button>
                 </div>
               </div>

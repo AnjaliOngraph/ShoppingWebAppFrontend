@@ -3,6 +3,12 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { injectStyle } from "react-toastify/dist/inject-style";
+
+if (typeof window !== "undefined") {
+  injectStyle();
+}
 
 export default function Productdetails() {
   const navigate = useNavigate();
@@ -37,18 +43,27 @@ export default function Productdetails() {
         if (cartItems[i].productId === productId) {
           cartItems[i].count++;
           setCart(cartItems);
+          toast.success("Item Added to Cart Successfully.", {
+            position: toast.POSITION.TOP_CENTER,
+          });
           break;
         }
         if (i === cartItems.length - 1) {
           item = { productId: productId, count: 1 };
           console.log(item, "item");
           setCart([...cart, item]);
+          toast.success("Item Added to Cart Successfully.", {
+            position: toast.POSITION.TOP_CENTER,
+          });
         }
       }
     } else {
       item = { productId: productId, count: 1 };
       console.log(item, "item");
       setCart([...cart, item]);
+      toast.success("Item Added to Cart Successfully.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
   };
 
@@ -58,10 +73,12 @@ export default function Productdetails() {
 
   return (
     <div className="bg-white">
-      <Navbar length={cart?.length} />
+      <Navbar
+       length={cart?.length}
+        />
 
       <div className="m-4 mt-8">
-        <a
+        <div
           className="  hover:text-gray-900 font-semibold cursor-pointer text-gray-700 inline"
           onClick={(e) => {
             e.preventDefault();
@@ -83,7 +100,7 @@ export default function Productdetails() {
             ></path>
           </svg>
           Back to Home
-        </a>
+        </div>
       </div>
 
       <div>
@@ -92,12 +109,12 @@ export default function Productdetails() {
             role="list"
             className="text-sm mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            <a
+            <div
               aria-current="page"
               className="font-medium text-gray-500 hover:text-gray-600"
             >
               {product.name}
-            </a>
+            </div>
           </li>
         </nav>
 
@@ -154,6 +171,7 @@ export default function Productdetails() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

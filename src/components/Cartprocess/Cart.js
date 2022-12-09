@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../mainPages/Navbar";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
-// import CartDisplay from "./cartDisplay";
+import LinesEllipsis from "react-lines-ellipsis";
 
 export default function Cart() {
   const cartItems = JSON.parse(localStorage.getItem("cart"));
@@ -30,7 +30,7 @@ export default function Cart() {
 
               pro.push(item);
 
-              if (cartItems.length - 1 == index) {
+              if (cartItems.length - 1 === index) {
                 setProducts(pro);
               }
 
@@ -130,24 +130,22 @@ export default function Cart() {
     }
   };
 
-  // useEffect(() => {
-  //   localStorage.setItem("cart", JSON.stringify(cart));
-  // }, [cart]);
-
   return (
     <div>
-      <Navbar length={cartItems?.length} />
+      <Navbar 
+      length={cartItems?.length} 
+      />
       <div className=" relative m-8 p-6">
         <div className="col-span-2 font-bold pb-4 text-2xl">Shopping Cart</div>
         <div className="pt-3">
-          <table className="table-auto w-full rounded-md bg-gray-100 ">
-            <thead className="text-left">
+          <table className="table-auto w-full rounded-md bg-gray-100 bg-gradient-to-b from-slate-100 via-white to-slate-100">
+            <thead className="text-left text-white bg-lime-600">
               <tr className="border-b-2 border-gray-400">
-                <th className="p-3 pl-10 w-96">ITEM DESCRIPTION</th>
-                <th className="text-center">UNIT PRICE</th>
-                <th className="text-center">QUANTITY</th>
-                <th className="text-center">SUBTOTAL</th>
-                <th></th>
+                <th className="p-3 pl-10 w-auto">ITEM DESCRIPTION</th>
+                <th className="text-center w-52">UNIT PRICE</th>
+                <th className="text-center w-52">QUANTITY</th>
+                <th className="text-center  w-52">SUBTOTAL</th>
+                <th className="w-10"></th>
               </tr>
             </thead>
             {products.length === 0 ? (
@@ -162,13 +160,20 @@ export default function Cart() {
                   <tbody key={product.data._id} className="text-left">
                     <tr className="border-b-2 border-gray-200">
                       <td className="p-2 pl-10">
-                        <span>
+                        <span className="flex ">
                           <img
                             alt={"product"}
                             src={product.data.imageSrc}
                             className="w-16 inline rounded-md"
                           ></img>
-                          <span className="pl-4">{product.data.name}</span>
+                          <LinesEllipsis
+                            className="pl-4"
+                            text={product.data.name}
+                            maxLine="2"
+                            ellipsis="..."
+                            trimRight
+                            basedOn="letters"
+                          />
                         </span>
                       </td>
                       <td className="text-center">

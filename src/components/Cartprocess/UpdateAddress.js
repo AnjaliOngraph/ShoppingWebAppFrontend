@@ -1,7 +1,5 @@
 import { Formik } from "formik";
-import { useState } from "react";
 import { ToastContainer } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 const validate = (values) => {
   let errors = {};
@@ -42,16 +40,10 @@ const validate = (values) => {
   return errors;
 };
 
-export default function EditAddressForm() {
-const navigate= useNavigate();
-
+export default function EditAddressForm(props) {
   const editAddressId = localStorage.getItem("editAddressId");
-const [addresses, setAddresses]= useState(
-  !localStorage.getItem("userAddresses")
-  ? []
-  : JSON.parse(localStorage.getItem("userAddresses"))
-)
-  const filteredAddress = addresses.filter((e) => {
+
+  const filteredAddress = props.addresses.filter((e) => {
     return e._id === editAddressId;
   });
 
@@ -71,7 +63,9 @@ const [addresses, setAddresses]= useState(
       const res = await fetch(`/updateAddress/${editAddressId}`, {
         method: "PATCH",
         headers: {
-          "content-Type": "application/json",
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("userId"),
         },
         body: JSON.stringify({
           name,
@@ -80,23 +74,20 @@ const [addresses, setAddresses]= useState(
           pinCode,
           address,
           city,
-          UserId: localStorage.getItem("userId"),
         }),
       });
-      const details = await res.json()
+      const details = await res.json();
       if (res.status === 201) {
         console.log("address updated, successfully");
-        for(let i=0; i<addresses.length;i++){
-          if(addresses[i]._id===editAddressId){
-            addresses[i] = details
-            localStorage.setItem("userAddresses",JSON.stringify(addresses))
+        for (let i = 0; i < props.addresses.length; i++) {
+          if (props.addresses[i]._id === editAddressId) {
+            props.addresses[i] = details;
+            props.setEditForm(false);
             break;
-          }
-          else{
+          } else {
             console.log("id not found");
           }
         }
-        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -121,11 +112,20 @@ const [addresses, setAddresses]= useState(
         return (
           <div>
             <form onSubmit={handleSubmit}>
-              <div className="overflow-hidden shadow sm:rounded-md">
+              <div className="overflow-hidden shadow border-solid border-l-2 border-gray-300">
                 <div className="inline-flex">
                   <div className="m-6 font-bold text-xl">
                     Edit Delivery Address
                   </div>
+                  <button
+                    className="right-16 m-4 absolute hover:font-semibold "
+                    onClick={() => {
+                      props.setEditForm(false);
+                    }}
+                    title="close"
+                  >
+                    X
+                  </button>
                 </div>
 
                 <div className="bg-white px-4 py-5 sm:p-6">
@@ -276,12 +276,17 @@ const [addresses, setAddresses]= useState(
                 </div>
                 <div className=" py-3 sm:px-6">
                   <button
-                    className=" items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
+                    className="  items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
+                    onClick={() => props.setEditForm(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="ml-2 items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-700 px-4 py-1 font-bold text-x  text-white shadow-sm hover:bg-lime-800 hover:shadow-md hover:shadow-lime-500"
                     type="submit"
                   >
-                  Submit
+                    Update
                   </button>
-                  
                 </div>
               </div>
             </form>
