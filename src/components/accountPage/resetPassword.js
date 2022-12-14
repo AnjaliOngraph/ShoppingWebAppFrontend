@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import { injectStyle } from "react-toastify/dist/inject-style";
-import { useState} from "react";
+import { useState } from "react";
 import Navbar from "../mainPages/Navbar";
 import { useParams } from "react-router-dom";
 
@@ -43,23 +43,6 @@ export default function ResetPassword() {
 
   const [message, setMessage] = useState("");
 
-  // const uservalid = async () => {
-  //   const res = await fetch(`/reset-password/${id}/${token}`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   const data = await res.json();
-
-  //   if (data.status === 201) {
-  //     console.log("user valid");
-  //   } else {
-  //     history("*");
-  //   }
-  // };
-
   const sendPassword = async (values) => {
     const { password, cpassword } = values;
     const res = await fetch(`/${id}/${token}`, {
@@ -85,11 +68,9 @@ export default function ResetPassword() {
     }
   };
 
-  const cartItems = JSON.parse(localStorage.getItem("cart"));
-
   return (
     <>
-      <Navbar length={cartItems?.length} />
+      <Navbar />
       <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8 my-20">
         <div className="w-full max-w-md space-y-8">
           <div>

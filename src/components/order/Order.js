@@ -2,8 +2,12 @@ import axios from "axios";
 import Navbar from "../mainPages/Navbar";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {useDispatch} from "react-redux"
+
+import { GetOrder } from "../../redux/order/orderActions";
 
 export default function Orders() {
+  const dispatch= useDispatch()
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
 
@@ -40,7 +44,7 @@ export default function Orders() {
 
   return (
     <div>
-      <Navbar length={cartItems?.length} />
+      <Navbar />
       <div className=" relative m-8 p-6">
         <div className="col-span-2 font-bold pb-4 text-2xl ">My Orders</div>
         {console.log(orders.length)}
@@ -67,7 +71,8 @@ export default function Orders() {
                    
                       hover:shadow-gray-200 hover:border-solid "
                     >
-                      <tr className="border-b-2 border-gray-200 h-20 cursor-pointer " onClick={()=>navigate("/myOrder/orderDetails",{state:{orderDetails: order}})}>
+                      <tr className="border-b-2 border-gray-200 h-20 cursor-pointer " onClick={()=>{navigate("/myOrder/orderDetails");
+                      dispatch(GetOrder(order))}}>
                         <td className="  w-52 text-center  ">
                           {formatter.format(Date.parse(order.createdAt))}
                         </td>

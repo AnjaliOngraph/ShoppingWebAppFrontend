@@ -1,5 +1,7 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import React from "react";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 import Header from "./components/mainPages/Header";
 import Productdetails from "./components/productPages/ProductDetails";
@@ -15,8 +17,19 @@ import ResetPassword from "./components/accountPage/resetPassword";
 import PageNotFound from "./components/mainPages/pageNotFound";
 import { OrderDetailPage } from "./components/order/orderDetailPage";
 
+import { saveState } from "./redux/localStorage";
+
+store.subscribe(() => {
+  saveState({
+    address: store.getState().address ,
+    cart: store.getState().cart,
+    order:store.getState().order
+  });
+});
+
 function App() {
   return (
+    <Provider store={store}>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Header />} />
@@ -36,6 +49,7 @@ function App() {
         <Route path="*" element={<PageNotFound/>} />
       </Routes>
     </BrowserRouter>
+    </Provider>
   );
 }
 

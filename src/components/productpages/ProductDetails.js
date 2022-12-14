@@ -3,23 +3,20 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import { injectStyle } from "react-toastify/dist/inject-style";
 
-if (typeof window !== "undefined") {
-  injectStyle();
-}
+import { useSelector, useDispatch } from "react-redux";
+import { GetCartItems } from "../../redux/cart/cartActions";
+
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Productdetails() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState([]);
+  const data = useSelector((state) => state.cart.cartItems);
 
-  const [cart, setCart] = useState(
-    !localStorage.getItem("cart")
-      ? []
-      : JSON.parse(localStorage.getItem("cart"))
-  );
+  const [cart, setCart] = useState(data);
 
   useEffect(() => {
     axios
@@ -34,7 +31,7 @@ export default function Productdetails() {
   }, [id]);
 
   const addToCart = (productId) => {
-    const cartItems = JSON.parse(localStorage.getItem("cart"));
+    const cartItems = data;
     console.log(cartItems, "cartItems");
     let item;
     if (cartItems?.length !== 0) {
@@ -43,39 +40,30 @@ export default function Productdetails() {
         if (cartItems[i].productId === productId) {
           cartItems[i].count++;
           setCart(cartItems);
-          toast.success("Item Added to Cart Successfully.", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          toast.success("Item Added to Cart Successfully.");
           break;
         }
         if (i === cartItems.length - 1) {
           item = { productId: productId, count: 1 };
           console.log(item, "item");
           setCart([...cart, item]);
-          toast.success("Item Added to Cart Successfully.", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          toast.success("Item Added to Cart Successfully.");
         }
       }
     } else {
       item = { productId: productId, count: 1 };
       console.log(item, "item");
       setCart([...cart, item]);
-      toast.success("Item Added to Cart Successfully.", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.success("Item Added to Cart Successfully.");
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  dispatch(GetCartItems(cart));
 
   return (
     <div className="bg-white">
-      <Navbar
-       length={cart?.length}
-        />
+      <Navbar />
+      <Toaster />
 
       <div className="m-4 mt-8">
         <div
@@ -171,7 +159,6 @@ export default function Productdetails() {
           </div>
         </div>
       </div>
-      <ToastContainer/>
     </div>
   );
 }

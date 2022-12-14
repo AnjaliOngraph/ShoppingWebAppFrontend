@@ -1,11 +1,13 @@
 import Navbar from "../mainPages/Navbar";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import{ useSelector} from "react-redux"
 
 export function OrderDetailPage() {
   const location = useLocation();
-  console.log(location.state.orderDetails, "hey its details heer");
-  const details = location.state.orderDetails;
+
+  const details = useSelector(state=>state.order.getOrder)
+  console.log(details);
 const navigate = useNavigate();
   let productList = [];
 

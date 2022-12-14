@@ -2,14 +2,17 @@ import Navbar from "../mainPages/Navbar";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function PaymentPage() {
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const addresses = location.state.addresses;
+  // const addresses = location.state.addresses;
+  const addresses = useSelector(state=>state.address.getAddress)
 
-  const deliveryAddressId = localStorage.getItem("addressId");
+  const deliveryAddressId = useSelector((state) => state.address.addressId);
 
   const address = addresses.filter((e) => {
     return e._id === deliveryAddressId;
@@ -39,9 +42,8 @@ export default function PaymentPage() {
           Products: itemdetail,
           count: count,
           productQuantity: totalCount,
-
-          orderAmount: localStorage.getItem("totalAmount"),
-          DeliveryAddress: localStorage.getItem("addressId"),
+          orderAmount: totalAmount,
+          DeliveryAddress: deliveryAddressId
         }),
       });
 
@@ -54,11 +56,11 @@ export default function PaymentPage() {
     }
   };
 
-  const cartItems = JSON.parse(localStorage.getItem("cart"));
+  
 
   return (
     <div>
-      <Navbar length={cartItems?.length} />
+      <Navbar />
       <div className="m-10 grid grid-cols-3 grid-rows-5 gap-3  font-semibold">
         <div className=" grid col-span-2 row-span-5 gap-3">
           <div className=" col-span-2 row-span-1 border-gray-200 border dotted">
@@ -222,9 +224,7 @@ export default function PaymentPage() {
               <div className="row-span-1 border solid border-gray-300">
                 <div className="p-2 inline-flex">
                   Basket Value
-                  <div className="ml-36">
-                    &#8377;{localStorage.getItem("totalAmount")}
-                  </div>{" "}
+                  <div className="ml-36">&#8377;{totalAmount}</div>{" "}
                 </div>
                 <div className="p-2 inline-flex">
                   Delivery Charge
@@ -234,9 +234,7 @@ export default function PaymentPage() {
               <div>
                 <div className="row-span-1 border solid border-gray-300 p-2 flex">
                   Total Amount Payable
-                  <div className="ml-20 text-xl">
-                    &#8377;{localStorage.getItem("totalAmount")}
-                  </div>
+                  <div className="ml-20 text-xl">&#8377;{totalAmount}</div>
                 </div>
               </div>
             </div>

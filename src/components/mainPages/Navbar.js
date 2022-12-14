@@ -2,12 +2,13 @@ import { Disclosure } from "@headlessui/react";
 import Dropdown from "./Dropdown";
 import { useNavigate } from "react-router-dom";
 import logo from "../images/grocessies_logo-removebg-preview.png";
+import { useSelector } from "react-redux";
 
 export default function Navbar(props) {
   const navigate = useNavigate();
 
-  const cartItems = JSON.parse(localStorage.getItem("cart"));
-
+  const length = useSelector((state) => state.cart.cartItems).length;
+  
   return (
     <Disclosure as="nav" className="bg-lime-600">
       <>
@@ -40,13 +41,7 @@ export default function Navbar(props) {
                 className="ml-3 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-lime-700"
               >
                 Cart
-                <div className="color-black px-2">
-                  {props.length
-                    ? props.length
-                    : !cartItems
-                    ? 0
-                    : cartItems?.length}
-                </div>
+                <div className="color-black px-2">{length}</div>
               </button>
 
               {localStorage.getItem("userId") ? (
@@ -64,6 +59,7 @@ export default function Navbar(props) {
                     onClick={(e) => {
                       e.preventDefault();
                       localStorage.removeItem("userId");
+                      localStorage.removeItem("addressId");
                       navigate("/");
                     }}
                     className="ml-3 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-lime-700"

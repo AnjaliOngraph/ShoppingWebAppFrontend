@@ -3,18 +3,17 @@ import Navbar from "../mainPages/Navbar";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
 import LinesEllipsis from "react-lines-ellipsis";
+import { useDispatch, useSelector } from "react-redux";
+
+import { TotalAmount, GetCartItems } from "../../redux/cart/cartActions";
 
 export default function Cart() {
-  const cartItems = JSON.parse(localStorage.getItem("cart"));
+  const [state,setState]= useState(true)
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
-
-  const [cart, setCart] = useState(
-    !localStorage.getItem("cart")
-      ? []
-      : JSON.parse(localStorage.getItem("cart"))
-  );
 
   let item;
 
@@ -33,8 +32,6 @@ export default function Cart() {
               if (cartItems.length - 1 === index) {
                 setProducts(pro);
               }
-
-              // setProducts([...products, item]);
             })
             .catch((b) => {
               console.log(Error);
@@ -46,22 +43,32 @@ export default function Cart() {
     }
   }, []);
 
-  const addItemHandler = (product) => {
-    console.log(product, "89");
+  let totalAmount = useSelector((state) => state.cart.totalAmount);
 
+  dispatch(
+    TotalAmount(
+      products.reduce(
+        (total, product) => total + product.data.price * product.count,
+        0
+      )
+    )
+  );
+
+  const addItemHandler = (product) => {
     for (let i = 0; i < cartItems?.length; i++) {
       if (cartItems[i].productId === product.data._id) {
-        console.log(product.count++, "new count");
+        cartItems[i].count++;
+        product.count++;
 
-        console.log(cartItems[i].count++, " cartItems[i].count++");
-        setCart(cartItems);
-        console.log(cart, "cart");
+        dispatch(GetCartItems(cartItems));
+
         break;
       }
       if (i === cartItems.length - 1) {
         console.log({ error: "prodcut not found" });
       }
     }
+    setState(!state)
   };
 
   const removeItemHandler = (product) => {
@@ -69,16 +76,25 @@ export default function Cart() {
       const filtered = cartItems.filter((cartItem) => {
         return cartItem.productId !== product.data._id;
       });
-      setCart(filtered);
+
+      dispatch(GetCartItems(filtered));
+
+      const filteredproducts = products.filter((product1) => {
+        return product1.data._id !== product.data._id;
+      });
+
+      setProducts(filteredproducts);
     } else {
       for (let i = 0; i < cartItems?.length; i++) {
         if (cartItems[i].productId === product.data._id) {
           cartItems[i].count--;
           product.count--;
-          setCart(cartItems);
+
+          dispatch(GetCartItems(cartItems));
         }
       }
     }
+    setState(!state)
   };
 
   const removeRowHandler = (productId) => {
@@ -93,9 +109,7 @@ export default function Cart() {
       });
 
       setProducts(filteredproducts);
-
-      // setCart(filtered);
-      localStorage.setItem("cart", JSON.stringify(filtered));
+      dispatch(GetCartItems(filtered));
     } catch (error) {
       console.log({ error: "error in removing item" });
     }
@@ -103,7 +117,7 @@ export default function Cart() {
 
   const emptyBasketHandler = () => {
     try {
-      localStorage.removeItem("cart");
+      dispatch(GetCartItems([]));
       setProducts([]);
     } catch (error) {
       console.log({ error: "error in emptying basket" });
@@ -116,7 +130,6 @@ export default function Cart() {
     try {
       const UserId = localStorage.getItem("userId");
 
-      console.log(UserId, "id");
       if (UserId) {
         navigate("/cart/address", {
           state: { length: cartItems.length },
@@ -132,9 +145,7 @@ export default function Cart() {
 
   return (
     <div>
-      <Navbar 
-      length={cartItems?.length} 
-      />
+      <Navbar />
       <div className=" relative m-8 p-6">
         <div className="col-span-2 font-bold pb-4 text-2xl">Shopping Cart</div>
         <div className="pt-3">
@@ -232,21 +243,7 @@ export default function Cart() {
                 <span className="mr-48 font-bold">Total</span>
                 <span>
                   &#8377;
-                  {products.reduce(
-                    (total, product) =>
-                      total + product.data.price * product.count,
-                    0
-                  )}
-                  {localStorage.setItem(
-                    "totalAmount",
-                    JSON.stringify(
-                      products.reduce(
-                        (total, product) =>
-                          total + product.data.price * product.count,
-                        0
-                      )
-                    )
-                  )}
+                  {totalAmount}
                 </span>
                 <button
                   className=" items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-lime-600 px-6 py-2 mt-6 font-bold text-xl  text-white shadow-sm hover:bg-lime-700 hover:shadow-md hover:shadow-lime-500"

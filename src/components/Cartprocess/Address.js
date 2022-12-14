@@ -1,18 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import { injectStyle } from "react-toastify/dist/inject-style";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
 
 import Navbar from "../mainPages/Navbar";
 import EditAddressForm from "./updateAddress";
 import DeliveryAddressForm from "./addAddress";
-
-if (typeof window !== "undefined") {
-  injectStyle();
-}
+import { AddressId, GetAddress } from "../../redux/address/addressActions";
 
 export default function Address() {
+  const dispatch = useDispatch();
+  const addressId = useSelector((state) => state.address.addressId);
   const [addresses, setAddresses] = useState([]);
 
   const [done, setDone] = useState(false);
@@ -33,37 +32,33 @@ export default function Address() {
           },
         })
         .then((response) => {
-          console.log(response, "response");
-          setAddresses(response.data);
+          for (let i = 0; i < response.data.length; i++) {
+            setAddresses(response.data);
+          }
         });
     } catch (error) {
       console.log(error);
     }
   }, [addresses.length]);
 
-  console.log(addresses, "add to check");
-
   const deliveryAddressHandler = (addressId) => {
-    console.log(addressId, "address");
-    localStorage.setItem("addressId", addressId);
+    dispatch(AddressId(addressId));
     setDone(!done);
   };
 
-  const deleteHandler = (addressId) => {
+  const deleteHandler = async (addressId) => {
     try {
-      axios.delete(`/deleteAddress/${addressId}`).then((response) => {
-        console.log(response.data, "delete address is called");
+      axios.patch(`/deleteAddress/${addressId}`).then((response) => {
+        console.log(response.data, "response");
       });
 
       const filteredAddress = addresses.filter((e) => {
         return e._id !== addressId;
       });
       setAddresses(filteredAddress);
-      console.log(localStorage.getItem("addressId"), ".................");
 
       for (let i = 0; i < addresses.length; i++) {
-        if (localStorage.getItem("addressId") === addresses[i]._id)
-          localStorage.removeItem("addressId");
+        if (addressId === addresses[i]._id) dispatch(AddressId(""));
         break;
       }
     } catch (error) {
@@ -71,11 +66,10 @@ export default function Address() {
     }
   };
 
-  const cartItems = JSON.parse(localStorage.getItem("cart"));
-
   return (
     <div>
-      <Navbar length={cartItems?.length} />
+      <Navbar />
+      <Toaster/>
       <div className="m-6 p-6">
         <div className="mt-10 sm:mt-0">
           <div className="md:grid grid-cols-4  md:gap-6">
@@ -217,9 +211,7 @@ export default function Address() {
                                       ></path>
                                     </svg>
                                   </button>
-
-                                  {address._id ===
-                                  localStorage.getItem("addressId") ? (
+                                  {address._id === addressId ? (
                                     <button className="pl-2 ">
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -268,17 +260,12 @@ export default function Address() {
                     <button
                       className="bg-red-600 mt-4 p-2 text-white rounded-md hover:bg-red-700 font-semibold"
                       onClick={() => {
-                        if (!localStorage.getItem("addressId")) {
-                          toast.error("Address Not Selected.", {
-                            position: toast.POSITION.TOP_CENTER,
-                          });
+                        if (!addressId) {
+                          toast.error("Address Not Selected.");
                         } else {
+                          dispatch(GetAddress(addresses));
                           console.log(addresses, "addresses");
-                          navigate("/cart/address/checkout", {
-                            state: {
-                              addresses: addresses,
-                            },
-                          });
+                          navigate("/cart/address/checkout");
                         }
                       }}
                     >
@@ -287,8 +274,6 @@ export default function Address() {
                   </div>
                 </div>
               )}
-
-              <ToastContainer />
             </div>
           </div>
         </div>

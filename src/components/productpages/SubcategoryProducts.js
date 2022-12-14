@@ -1,31 +1,26 @@
 import Navbar from "../mainPages/Navbar";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, React } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import { injectStyle } from "react-toastify/dist/inject-style";
 import LinesEllipsis from "react-lines-ellipsis";
+import { useSelector, useDispatch } from "react-redux";
+import { GetCartItems } from "../../redux/cart/cartActions";
 
-if (typeof window !== "undefined") {
-  injectStyle();
-}
+import toast, { Toaster } from "react-hot-toast";
 
 export default function SubcategoryProducts() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [products, setProducts] = useState([]);
+  const data = useSelector((state) => state.cart.cartItems);
 
-  const [cart, setCart] = useState(
-    !localStorage.getItem("cart")
-      ? []
-      : JSON.parse(localStorage.getItem("cart"))
-  );
+  const [cart, setCart] = useState(!data ? [] : data);
   useEffect(() => {
     axios
       .get(`/subcategory-products/${id}`)
       .then((response) => {
-        console.log(response.data);
         setProducts(response.data);
       })
       .catch((b) => {
@@ -34,23 +29,20 @@ export default function SubcategoryProducts() {
   }, [id]);
 
   const addToCart = (productId) => {
-    const cartItems = JSON.parse(localStorage.getItem("cart"));
-    console.log(cartItems, "cartItems");
+    const cartItems = data;
+
     let item;
     if (cartItems?.length !== 0) {
       for (let i = 0; i < cartItems?.length; i++) {
-        console.log(cartItems[i], "cartitems");
         if (cartItems[i].productId === productId) {
           cartItems[i].count++;
           setCart(cartItems);
-          toast.success("Item Added to Cart Successfully.", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          toast.success("Item Added to Cart Successfully.");
           break;
         }
         if (i === cartItems.length - 1) {
           item = { productId: productId, count: 1 };
-          console.log(item, "item");
+
           setCart([...cart, item]);
           toast.success("Item Added to Cart Successfully.", {
             position: toast.POSITION.TOP_CENTER,
@@ -61,19 +53,16 @@ export default function SubcategoryProducts() {
       item = { productId: productId, count: 1 };
       console.log(item, "item");
       setCart([...cart, item]);
-      toast.success("Item Added to Cart Successfully.", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.success("Item Added to Cart Successfully.");
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  dispatch(GetCartItems(cart));
 
   return (
     <div className="bg-white">
-      <Navbar length={cart?.length} />
+      <Navbar />
+      <Toaster />
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8 ">
         <button
           className="m-4 hover:text-gray-900 font-semibold cursor-pointer text-gray-700 inline"
@@ -121,14 +110,13 @@ export default function SubcategoryProducts() {
                 </div>
 
                 <LinesEllipsis
-                    className="mt-4 h-12 text-sm text-gray-700"
-                    text={product.name}
-                    maxLine="2"
-                    ellipsis="..."
-                    trimRight
-                    basedOn="letters"
-                 
-                  />
+                  className="mt-4 h-12 text-sm text-gray-700"
+                  text={product.name}
+                  maxLine="2"
+                  ellipsis="..."
+                  trimRight
+                  basedOn="letters"
+                />
 
                 {/* <Tippy
                   content={product.name}
@@ -156,7 +144,7 @@ export default function SubcategoryProducts() {
               <div className="">
                 <button
                   type="submit"
-                  className=" mx-8 
+                  className=" mx-8
                     rounded-md border border-transparent bg-lime-600  px-4 text-base font-medium text-white hover:bg-lime-700 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2 mt-2 "
                   onClick={() => {
                     addToCart(product._id);
@@ -169,7 +157,7 @@ export default function SubcategoryProducts() {
           ))}
         </div>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 }

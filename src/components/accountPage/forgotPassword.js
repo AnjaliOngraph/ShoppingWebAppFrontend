@@ -58,10 +58,10 @@ export default function ForgotPassword() {
     }
   };
 
-  const cartItems = JSON.parse(localStorage.getItem("cart"));
+
   return (
     <>
-      <Navbar length={cartItems?.length} />
+      <Navbar  />
       <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8 my-20">
         <div className="w-full max-w-md space-y-8">
           <div>
